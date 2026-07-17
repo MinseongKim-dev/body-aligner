@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import type { PhotoAnalysisResult, PoseIssue, Severity } from '@/lib/types';
+import type { PhotoAnalysisResult, PhotoType, PoseIssue } from '@/lib/types';
 
 interface NormalizedLandmark {
   x: number;
@@ -11,10 +11,61 @@ interface NormalizedLandmark {
 }
 
 interface Props {
+  photoType: PhotoType;
   onResult: (result: PhotoAnalysisResult) => void;
 }
 
-export default function PhotoAnalyzer({ onResult }: Props) {
+const TYPE_GUIDES: Record<PhotoType, { icon: string; title: string; tips: string[] }> = {
+  front: {
+    icon: '🧍',
+    title: '전신 정면 사진',
+    tips: [
+      '발부터 머리까지 전신이 보이도록',
+      '양발을 어깨 너비로 벌리고 팔은 옆으로',
+      '카메라는 가슴 높이, 정면을 바라보세요',
+      '밝은 배경, 단색 옷 권장',
+    ],
+  },
+  side: {
+    icon: '🚶',
+    title: '전신 측면 사진',
+    tips: [
+      '몸의 오른쪽 또는 왼쪽이 카메라를 향하도록',
+      '자연스러운 자세로 서서 팔은 옆으로',
+      '발이 수직 기준선 위에 오도록',
+      '전두경추 자세와 골반 전방경사를 측정합니다',
+    ],
+  },
+  ankle: {
+    icon: '🦶',
+    title: '발목 사진',
+    tips: [
+      '발목과 종아리가 보이도록 촬영',
+      '정면 혹은 약간 기울어진 각도',
+      '발이 자연스럽게 선 상태에서 촬영',
+    ],
+  },
+  knee: {
+    icon: '🦵',
+    title: '무릎 사진',
+    tips: [
+      '무릎 관절이 중심에 오도록',
+      '정면에서 촬영해 내·외측 편위 확인',
+      '약간 구부린 상태도 좋습니다',
+    ],
+  },
+  shoulder: {
+    icon: '💪',
+    title: '어깨 사진',
+    tips: [
+      '어깨와 상체가 모두 보이도록',
+      '등을 편 자연스러운 자세',
+      '정면 또는 후면에서 촬영',
+    ],
+  },
+};
+
+export default function PhotoAnalyzer({ photoType, onResult }: Props) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'analyzing' | 'done' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
@@ -29,7 +80,6 @@ export default function PhotoAnalyzer({ onResult }: Props) {
     setPreview(imageUrl);
 
     try {
-      // Dynamically import MediaPipe Tasks Vision
       const { PoseLandmarker, FilesetResolver, DrawingUtils } = await import('@mediapipe/tasks-vision');
 
       setStatus('analyzing');
@@ -48,7 +98,6 @@ export default function PhotoAnalyzer({ onResult }: Props) {
         numPoses: 1,
       });
 
-      // Draw image on canvas and run inference
       const img = new Image();
       img.src = imageUrl;
       await new Promise<void>((resolve, reject) => {
@@ -62,29 +111,31 @@ export default function PhotoAnalyzer({ onResult }: Props) {
       canvas.height = img.naturalHeight;
       ctx.drawImage(img, 0, 0);
 
-      const result = poseLandmarker.detect(canvas);
+      const mpResult = poseLandmarker.detect(canvas);
       poseLandmarker.close();
 
-      if (!result.landmarks || result.landmarks.length === 0) {
+      if (!mpResult.landmarks || mpResult.landmarks.length === 0) {
         setStatus('error');
         setErrorMsg('포즈를 감지하지 못했습니다. 전신이 보이는 밝은 사진을 사용해 주세요.');
         return;
       }
 
-      const landmarks = result.landmarks[0] as NormalizedLandmark[];
+      const landmarks = mpResult.landmarks[0] as NormalizedLandmark[];
 
-      // Draw skeleton overlay
       const drawingUtils = new DrawingUtils(ctx);
-      drawingUtils.drawConnectors(result.landmarks[0], PoseLandmarker.POSE_CONNECTIONS, {
+      drawingUtils.drawConnectors(mpResult.landmarks[0], PoseLandmarker.POSE_CONNECTIONS, {
         color: '#00e5ff',
         lineWidth: 2,
       });
-      drawingUtils.drawLandmarks(result.landmarks[0], {
+      drawingUtils.drawLandmarks(mpResult.landmarks[0], {
         color: '#ff0066',
         radius: 4,
       });
 
-      // ─── Measurements ──────────────────────────────
+      // Landmarks
+      const nose = landmarks[0];
+      const lEar = landmarks[7];
+      const rEar = landmarks[8];
       const lShoulder = landmarks[11];
       const rShoulder = landmarks[12];
       const lHip = landmarks[23];
@@ -98,32 +149,41 @@ export default function PhotoAnalyzer({ onResult }: Props) {
 
       const toDeg = (rad: number) => rad * (180 / Math.PI);
 
-      // Shoulder tilt (positive = right shoulder lower)
-      const shoulderTiltDeg = toDeg(
-        Math.atan2(rShoulder.y - lShoulder.y, rShoulder.x - lShoulder.x),
-      );
+      const shoulderTiltDeg = toDeg(Math.atan2(rShoulder.y - lShoulder.y, rShoulder.x - lShoulder.x));
+      const hipTiltDeg = toDeg(Math.atan2(rHip.y - lHip.y, rHip.x - lHip.x));
 
-      // Hip tilt (positive = right hip lower)
-      const hipTiltDeg = toDeg(
-        Math.atan2(rHip.y - lHip.y, rHip.x - lHip.x),
-      );
-
-      // Knee deviation from hip-ankle midline (normalized)
       const bodyWidth = Math.abs(rShoulder.x - lShoulder.x) || 0.2;
       const lKneeMidX = (lHip.x + lAnkle.x) / 2;
       const rKneeMidX = (rHip.x + rAnkle.x) / 2;
       const leftKneeDeviation = ((lKnee.x - lKneeMidX) / bodyWidth) * 100;
       const rightKneeDeviation = ((rKnee.x - rKneeMidX) / bodyWidth) * 100;
 
-      // Foot angle (external rotation from vertical)
-      const leftFootAngleDeg = toDeg(
-        Math.atan2(lFootIdx.x - lAnkle.x, lAnkle.y - lFootIdx.y),
-      );
-      const rightFootAngleDeg = toDeg(
-        Math.atan2(rAnkle.x - rFootIdx.x, rAnkle.y - rFootIdx.y),
-      );
+      const leftFootAngleDeg = toDeg(Math.atan2(lFootIdx.x - lAnkle.x, lAnkle.y - lFootIdx.y));
+      const rightFootAngleDeg = toDeg(Math.atan2(rAnkle.x - rFootIdx.x, rAnkle.y - rFootIdx.y));
 
-      // ─── Issue Detection ───────────────────────────
+      // Side-view specific: forward head posture (nose forward of ear midpoint) and anterior pelvic tilt
+      let forwardHeadMm: number | undefined;
+      let anteriorPelvicTilt: number | undefined;
+
+      if (photoType === 'side') {
+        // In side view, x-axis represents forward/backward displacement
+        // Ear is reference for head position; shoulder for torso
+        const earX = (lEar.x + rEar.x) / 2;
+        const shoulderX = (lShoulder.x + rShoulder.x) / 2;
+        // Positive = nose is forward of ear (forward head posture)
+        // Use image width as rough scale (very approximate)
+        const fhNorm = nose.x - earX;
+        forwardHeadMm = fhNorm * 1000; // normalized units
+
+        // Anterior pelvic tilt: hip higher (smaller y) than neutral relative to lumbar
+        // Approximate via difference in y between hip and knee relative to trunk height
+        const hipX = (lHip.x + rHip.x) / 2;
+        const kneeX = (lKnee.x + rKnee.x) / 2;
+        // Positive = hip forward of knee (anterior tilt indication)
+        const aptNorm = hipX - kneeX;
+        anteriorPelvicTilt = aptNorm * 100;
+      }
+
       const issues: PoseIssue[] = [];
 
       if (Math.abs(shoulderTiltDeg) > 3) {
@@ -146,7 +206,6 @@ export default function PhotoAnalyzer({ onResult }: Props) {
         });
       }
 
-      // Left knee valgus: knee moves medially (towards body center, i.e. positive x for left leg)
       if (leftKneeDeviation > 8) {
         issues.push({
           patternId: 'knee_valgus',
@@ -156,7 +215,6 @@ export default function PhotoAnalyzer({ onResult }: Props) {
           measurement: leftKneeDeviation,
         });
       }
-      // Right knee valgus: knee moves medially (towards body center, i.e. negative x for right leg)
       if (rightKneeDeviation < -8) {
         issues.push({
           patternId: 'knee_valgus',
@@ -186,13 +244,34 @@ export default function PhotoAnalyzer({ onResult }: Props) {
         });
       }
 
+      if (photoType === 'side' && forwardHeadMm !== undefined && forwardHeadMm > 30) {
+        issues.push({
+          patternId: 'upper_asymmetry',
+          severity: forwardHeadMm > 60 ? 'high' : 'medium',
+          description: `두부 전방 변위 감지 (거북목 패턴)`,
+          measurement: forwardHeadMm,
+        });
+      }
+
+      if (photoType === 'side' && anteriorPelvicTilt !== undefined && anteriorPelvicTilt > 10) {
+        issues.push({
+          patternId: 'core_weakness',
+          severity: anteriorPelvicTilt > 20 ? 'high' : 'medium',
+          description: `골반 전방경사 패턴 감지`,
+          measurement: anteriorPelvicTilt,
+        });
+      }
+
       const analysisResult: PhotoAnalysisResult = {
+        type: photoType,
         shoulderTiltDeg,
         hipTiltDeg,
         leftKneeDeviation,
         rightKneeDeviation,
         leftFootAngleDeg,
         rightFootAngleDeg,
+        ...(forwardHeadMm !== undefined && { forwardHeadMm }),
+        ...(anteriorPelvicTilt !== undefined && { anteriorPelvicTilt }),
         issues,
       };
 
@@ -203,7 +282,7 @@ export default function PhotoAnalyzer({ onResult }: Props) {
       setStatus('error');
       setErrorMsg('분석 중 오류가 발생했습니다. MediaPipe 모델 로딩에 인터넷 연결이 필요합니다.');
     }
-  }, [onResult]);
+  }, [onResult, photoType]);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -216,29 +295,25 @@ export default function PhotoAnalyzer({ onResult }: Props) {
     if (file && file.type.startsWith('image/')) analyze(file);
   };
 
+  const guide = TYPE_GUIDES[photoType];
+
   return (
     <div className="space-y-4">
-      {/* Drop zone */}
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => fileRef.current?.click()}
         className="border-2 border-dashed border-blue-300 rounded-xl p-8 flex flex-col items-center gap-3 cursor-pointer hover:bg-blue-50 transition-colors"
       >
-        <span className="text-4xl">📸</span>
-        <p className="text-sm text-slate-600 text-center">
-          전면 또는 측면 전신 사진을 업로드하거나 드래그하세요
-        </p>
-        <p className="text-xs text-slate-400 text-center">
-          밝은 곳에서 찍은 전신 사진 권장 · PNG, JPG, WEBP 지원
-        </p>
+        <span className="text-4xl">{guide.icon}</span>
+        <p className="text-sm text-slate-600 text-center font-medium">{guide.title} 업로드</p>
+        <p className="text-xs text-slate-400 text-center">사진을 드래그하거나 클릭해서 선택하세요 · PNG, JPG, WEBP</p>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
         <button className="mt-1 px-4 py-2 bg-blue-700 text-white text-sm rounded-lg font-medium hover:bg-blue-800 transition-colors">
           사진 선택
         </button>
       </div>
 
-      {/* Status */}
       {status === 'loading' && (
         <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl">
           <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
@@ -262,7 +337,6 @@ export default function PhotoAnalyzer({ onResult }: Props) {
         </div>
       )}
 
-      {/* Canvas preview with skeleton */}
       {preview && (
         <div className="relative rounded-xl overflow-hidden border border-slate-200">
           <canvas ref={canvasRef} className="w-full h-auto block" />
@@ -274,12 +348,11 @@ export default function PhotoAnalyzer({ onResult }: Props) {
 
       {!preview && (
         <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-          <p className="text-xs font-semibold text-slate-700 mb-2">사진 촬영 가이드</p>
+          <p className="text-xs font-semibold text-slate-700 mb-2">📋 촬영 가이드</p>
           <ul className="text-xs text-slate-500 space-y-1">
-            <li>• 전신이 보이도록 충분히 멀리서 촬영</li>
-            <li>• 발부터 머리까지 모두 포함</li>
-            <li>• 정면: 양발을 어깨 너비, 팔은 옆으로</li>
-            <li>• 밝은 배경, 단색 옷 권장</li>
+            {guide.tips.map((tip, i) => (
+              <li key={i}>• {tip}</li>
+            ))}
             <li>• <strong>개인정보</strong>: 사진은 브라우저에서만 처리되며 서버에 전송되지 않습니다</li>
           </ul>
         </div>
