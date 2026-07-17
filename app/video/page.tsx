@@ -297,7 +297,7 @@ export default function VideoPage() {
                 {/* Exercises */}
                 {analysis.exercises.length === 0 ? (
                   <p className="p-4 text-sm text-slate-400">
-                    인식된 운동이 없습니다. 운동 이름이 포함된 영상이나 캡션을 시도해보세요.
+                    인식된 운동이 없습니다. 운동 설명이 포함된 영상인지 확인해주세요 — 체형 교정·재활·피트니스 관련 내용이어야 매칭됩니다.
                   </p>
                 ) : (
                   <div className="p-4 space-y-2">
