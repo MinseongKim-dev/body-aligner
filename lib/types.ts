@@ -2,6 +2,7 @@ export type Side = 'left' | 'right' | 'both';
 export type Severity = 'low' | 'medium' | 'high';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 export type Purpose = 'strength' | 'mobility' | 'activation' | 'stretch';
+export type PhotoType = 'front' | 'side' | 'ankle' | 'knee' | 'shoulder';
 
 export interface ChecklistItem {
   id: string;
@@ -21,6 +22,15 @@ export interface BodyPattern {
   exerciseIds: string[];
 }
 
+export interface ExercisePrescription {
+  sets: number;
+  reps?: number;
+  durationSec?: number;
+  restSec: number;
+  eachSide?: boolean;
+  note?: string;
+}
+
 export interface Exercise {
   id: string;
   nameKr: string;
@@ -32,6 +42,8 @@ export interface Exercise {
   phase: 1 | 2 | 3;
   patternIds: string[];
   howTo: string;
+  prescription: ExercisePrescription;
+  demoSearchQuery: string;
 }
 
 export interface VideoExercise {
@@ -48,6 +60,7 @@ export interface VideoAnalysis {
   videoId: string;
   url: string;
   title?: string;
+  platform: 'youtube' | 'instagram';
   exercises: VideoExercise[];
   analyzedAt: string;
 }
@@ -61,12 +74,15 @@ export interface PoseIssue {
 }
 
 export interface PhotoAnalysisResult {
+  type: PhotoType;
   shoulderTiltDeg: number;
   hipTiltDeg: number;
   leftKneeDeviation: number;
   rightKneeDeviation: number;
   leftFootAngleDeg: number;
   rightFootAngleDeg: number;
+  forwardHeadMm?: number;
+  anteriorPelvicTilt?: number;
   issues: PoseIssue[];
 }
 
@@ -74,6 +90,6 @@ export interface AppState {
   checklistAnswers: Record<string, string>;
   painLocations: string[];
   detectedPatterns: BodyPattern[];
-  photoAnalysis: PhotoAnalysisResult | null;
+  photoAnalyses: PhotoAnalysisResult[];
   videoAnalyses: VideoAnalysis[];
 }

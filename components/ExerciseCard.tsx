@@ -30,8 +30,30 @@ const DIFFICULTY_LABELS: Record<string, string> = {
   advanced: '고급',
 };
 
+function PrescriptionBadge({ exercise }: { exercise: Exercise }) {
+  const { sets, reps, durationSec, restSec, eachSide } = exercise.prescription;
+  const volumeStr = reps
+    ? `${reps}회`
+    : durationSec
+    ? `${durationSec}초`
+    : '';
+  return (
+    <div className="flex flex-wrap gap-2 mt-2">
+      <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-semibold">
+        {sets}세트 × {volumeStr}
+        {eachSide && <span className="font-normal text-blue-500"> (각 방향)</span>}
+      </span>
+      <span className="inline-flex items-center px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-sm">
+        휴식 {restSec}초
+      </span>
+    </div>
+  );
+}
+
 export default function ExerciseCard({ exercise, matchedPatternNames, videoSources, showPhase }: Props) {
   const [open, setOpen] = useState(false);
+
+  const demoUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(exercise.demoSearchQuery)}`;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -46,9 +68,7 @@ export default function ExerciseCard({ exercise, matchedPatternNames, videoSourc
                 Phase {exercise.phase}
               </span>
             )}
-            <span
-              className={`text-xs font-semibold px-2 py-0.5 rounded-full ${PURPOSE_STYLES[exercise.purpose]}`}
-            >
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${PURPOSE_STYLES[exercise.purpose]}`}>
               {PURPOSE_LABELS[exercise.purpose]}
             </span>
             <span className="text-xs text-slate-400">{DIFFICULTY_LABELS[exercise.difficulty]}</span>
@@ -58,6 +78,8 @@ export default function ExerciseCard({ exercise, matchedPatternNames, videoSourc
             <span className="text-xs text-slate-400">{exercise.nameEn}</span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">{exercise.targetMuscles.join(' · ')}</p>
+          {/* Prescription summary always visible */}
+          <PrescriptionBadge exercise={exercise} />
         </div>
         <span className="text-slate-400 text-lg">{open ? '▲' : '▼'}</span>
       </button>
@@ -68,6 +90,13 @@ export default function ExerciseCard({ exercise, matchedPatternNames, videoSourc
             <p className="text-xs font-semibold text-slate-500 mb-1">방법</p>
             <p className="text-sm text-slate-700 leading-relaxed">{exercise.howTo}</p>
           </div>
+
+          {exercise.prescription.note && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+              <p className="text-xs text-amber-700 font-medium">💡 {exercise.prescription.note}</p>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-2">
             {exercise.equipment.map((eq) => (
               <span key={eq} className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
@@ -75,6 +104,20 @@ export default function ExerciseCard({ exercise, matchedPatternNames, videoSourc
               </span>
             ))}
           </div>
+
+          {/* Demo search link */}
+          <a
+            href={demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium hover:bg-red-100 transition-colors"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-red-600" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+            </svg>
+            동작 시범 영상 검색
+          </a>
+
           {matchedPatternNames && matchedPatternNames.length > 0 && (
             <div>
               <p className="text-xs font-semibold text-slate-500 mb-1">해당 패턴</p>

@@ -12,7 +12,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'mobility',
     phase: 1,
     patternIds: ['ankle_restriction'],
-    howTo: '벽에서 10cm 떨어져 서서 앞발을 벽에 붙이고 천천히 무릎을 앞으로 밀어 발목을 굴곡시킵니다. 15회 × 3세트.',
+    howTo: '벽에서 10cm 떨어져 서서 앞발을 벽에 붙이고 천천히 무릎을 앞으로 밀어 발목을 굴곡시킵니다.',
+    prescription: { sets: 3, reps: 15, restSec: 30, eachSide: true, note: '무릎이 발끝을 넘어도 OK' },
+    demoSearchQuery: '벽 발목 스트레칭 배측굴곡',
   },
   ankle_circles: {
     id: 'ankle_circles',
@@ -24,7 +26,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'mobility',
     phase: 1,
     patternIds: ['ankle_restriction'],
-    howTo: '한 발을 들고 발목을 시계 방향·반시계 방향으로 각 10회씩 천천히 돌립니다.',
+    howTo: '한 발을 들고 발목을 시계·반시계 방향으로 각 10회씩 천천히 돌립니다.',
+    prescription: { sets: 2, reps: 10, restSec: 20, eachSide: true, note: '최대 가동범위로 크게 돌리기' },
+    demoSearchQuery: '발목 돌리기 운동 발목 가동성',
   },
   '90_90_stretch': {
     id: '90_90_stretch',
@@ -36,7 +40,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'mobility',
     phase: 1,
     patternIds: ['pelvic_asymmetry', 'hip_external_rotation'],
-    howTo: '바닥에 앉아 양 무릎을 90도로 굽혀 한쪽은 앞에, 반대쪽은 옆에 놓습니다. 상체를 앞쪽 다리 방향으로 유지하며 30초 유지. 좌우 교대.',
+    howTo: '바닥에 앉아 양 무릎을 90도로 굽혀 한쪽은 앞에, 반대쪽은 옆에 놓습니다. 상체를 앞쪽 다리 방향으로 유지하며 30초 유지.',
+    prescription: { sets: 3, durationSec: 30, restSec: 20, eachSide: true, note: '억지로 누르지 말고 자연스럽게' },
+    demoSearchQuery: '90-90 고관절 스트레칭 방법',
   },
   hip_flexor_stretch: {
     id: 'hip_flexor_stretch',
@@ -49,6 +55,8 @@ export const EXERCISES: Record<string, Exercise> = {
     phase: 1,
     patternIds: ['pelvic_asymmetry', 'core_weakness'],
     howTo: '런지 자세로 뒤쪽 무릎을 바닥에 대고, 골반을 앞으로 밀며 30초 유지. 좌우 교대.',
+    prescription: { sets: 3, durationSec: 30, restSec: 20, eachSide: true, note: '허리가 꺾이지 않도록 복부에 힘' },
+    demoSearchQuery: '장요근 스트레칭 힙플렉서',
   },
   thoracic_rotation: {
     id: 'thoracic_rotation',
@@ -60,7 +68,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'mobility',
     phase: 1,
     patternIds: ['upper_asymmetry'],
-    howTo: '네발기기 자세에서 한 손을 머리 뒤에 대고 팔꿈치를 천장을 향해 회전합니다. 10회 × 좌우.',
+    howTo: '네발기기 자세에서 한 손을 머리 뒤에 대고 팔꿈치를 천장을 향해 회전합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 30, eachSide: true, note: '목이 아닌 흉추에서 회전 의식' },
+    demoSearchQuery: '흉추 회전 운동 등 가동성',
   },
   calf_stretch: {
     id: 'calf_stretch',
@@ -73,6 +83,8 @@ export const EXERCISES: Record<string, Exercise> = {
     phase: 1,
     patternIds: ['ankle_restriction'],
     howTo: '벽에 손을 짚고 한 발을 뒤로 빼 뒤꿈치를 바닥에 붙인 채 30초 유지. 무릎 구부려 가자미근도 스트레칭.',
+    prescription: { sets: 2, durationSec: 40, restSec: 20, eachSide: true, note: '무릎 편 버전 + 굽힌 버전 모두 진행' },
+    demoSearchQuery: '종아리 스트레칭 비복근 가자미근',
   },
   pigeon_pose: {
     id: 'pigeon_pose',
@@ -85,6 +97,8 @@ export const EXERCISES: Record<string, Exercise> = {
     phase: 1,
     patternIds: ['hip_external_rotation', 'pelvic_asymmetry'],
     howTo: '한 쪽 다리를 앞에 대각선으로 놓고 반대쪽 다리를 뒤로 뻗습니다. 상체를 앞으로 기울이며 40초 유지.',
+    prescription: { sets: 2, durationSec: 40, restSec: 30, eachSide: true, note: '골반이 기울지 않도록 수건 활용 가능' },
+    demoSearchQuery: '비둘기 자세 이상근 스트레칭',
   },
 
   // ─── Phase 1: Activation ─────────────────────────────────────────
@@ -99,6 +113,8 @@ export const EXERCISES: Record<string, Exercise> = {
     phase: 1,
     patternIds: ['core_weakness', 'pelvic_asymmetry'],
     howTo: '바닥에 누워 무릎을 세우고, 허리를 바닥에 붙이도록 복부를 수축시키며 후방경사를 만듭니다. 10초 유지 × 10회.',
+    prescription: { sets: 3, reps: 10, durationSec: 10, restSec: 20, note: '호흡 유지하며 허리가 바닥에 닿는 느낌' },
+    demoSearchQuery: '골반 틸트 운동 복횡근 활성화',
   },
   draw_in: {
     id: 'draw_in',
@@ -111,6 +127,8 @@ export const EXERCISES: Record<string, Exercise> = {
     phase: 1,
     patternIds: ['core_weakness'],
     howTo: '네발기기 자세에서 배꼽을 척추 방향으로 당기며 복횡근을 수축합니다. 호흡을 유지하며 10초 홀드 × 10회.',
+    prescription: { sets: 3, reps: 10, durationSec: 10, restSec: 20, note: '숨 참지 않고 호흡 유지가 핵심' },
+    demoSearchQuery: '드로인 복횡근 수축 운동',
   },
   clamshell: {
     id: 'clamshell',
@@ -122,7 +140,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'activation',
     phase: 1,
     patternIds: ['knee_valgus', 'glute_amnesia'],
-    howTo: '옆으로 누워 무릎을 45도 굽히고, 발뒤꿈치를 붙인 채 위쪽 무릎을 조개처럼 엽니다. 15회 × 3세트, 좌우.',
+    howTo: '옆으로 누워 무릎을 45도 굽히고, 발뒤꿈치를 붙인 채 위쪽 무릎을 조개처럼 엽니다.',
+    prescription: { sets: 3, reps: 15, restSec: 40, eachSide: true, note: '골반이 뒤로 굴러가지 않도록 고정' },
+    demoSearchQuery: '클램쉘 운동 중둔근 활성화',
   },
   glute_bridge: {
     id: 'glute_bridge',
@@ -134,7 +154,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'activation',
     phase: 1,
     patternIds: ['glute_amnesia', 'core_weakness'],
-    howTo: '바닥에 누워 무릎을 세우고 발을 골반 너비로 놓습니다. 엉덩이를 조이며 골반을 들어올려 2초 유지 후 내립니다. 15회 × 3세트.',
+    howTo: '바닥에 누워 무릎을 세우고 발을 골반 너비로 놓습니다. 엉덩이를 조이며 골반을 들어올려 2초 유지 후 내립니다.',
+    prescription: { sets: 3, reps: 15, restSec: 40, note: '상단에서 2초 홀드, 엉덩이를 의식하며 수행' },
+    demoSearchQuery: '글루트 브릿지 운동 대둔근',
   },
   standing_glute_squeeze: {
     id: 'standing_glute_squeeze',
@@ -147,6 +169,8 @@ export const EXERCISES: Record<string, Exercise> = {
     phase: 1,
     patternIds: ['glute_amnesia'],
     howTo: '서서 한쪽 엉덩이를 의도적으로 5초간 수축합니다. 교대로 20회. 걷기 전 워밍업으로도 활용.',
+    prescription: { sets: 2, reps: 20, durationSec: 5, restSec: 20, eachSide: true, note: '엉덩이 의식 훈련이 목적' },
+    demoSearchQuery: '스탠딩 둔근 수축 엉덩이 활성화',
   },
   donkey_kicks: {
     id: 'donkey_kicks',
@@ -158,7 +182,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'activation',
     phase: 1,
     patternIds: ['glute_amnesia'],
-    howTo: '네발기기 자세에서 무릎 각도를 유지한 채 한쪽 다리를 뒤 위쪽으로 들어올립니다. 15회 × 3세트, 좌우.',
+    howTo: '네발기기 자세에서 무릎 각도를 유지한 채 한쪽 다리를 뒤 위쪽으로 들어올립니다.',
+    prescription: { sets: 3, reps: 15, restSec: 30, eachSide: true, note: '허리가 꺾이지 않도록, 허벅지 뒤쪽 느낌' },
+    demoSearchQuery: '당나귀 킥 운동 대둔근 힙익스텐션',
   },
   wall_angels: {
     id: 'wall_angels',
@@ -170,7 +196,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'activation',
     phase: 1,
     patternIds: ['upper_asymmetry'],
-    howTo: '벽에 등을 붙이고 팔을 W자로 구부립니다. 팔꿈치와 손목이 벽에 닿은 채로 팔을 위로 슬라이드합니다. 10회 × 3세트.',
+    howTo: '벽에 등을 붙이고 팔을 W자로 구부립니다. 팔꿈치와 손목이 벽에 닿은 채로 팔을 위로 슬라이드합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 40, note: '머리·등·팔꿈치가 벽에서 떨어지면 안 됨' },
+    demoSearchQuery: '월엔젤 운동 어깨 견갑골',
   },
 
   // ─── Phase 1: Strength ───────────────────────────────────────────
@@ -184,7 +212,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 1,
     patternIds: ['core_weakness'],
-    howTo: '바닥에 누워 팔을 위로, 무릎을 90도 들어올립니다. 반대쪽 팔·다리를 동시에 뻗으며 허리를 바닥에 유지합니다. 10회 × 3세트.',
+    howTo: '바닥에 누워 팔을 위로, 무릎을 90도 들어올립니다. 반대쪽 팔·다리를 동시에 뻗으며 허리를 바닥에 유지합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 45, eachSide: true, note: '허리가 바닥에서 뜨면 범위 줄이기' },
+    demoSearchQuery: '데드벅 운동 코어 복횡근',
   },
   bird_dog: {
     id: 'bird_dog',
@@ -196,7 +226,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 1,
     patternIds: ['core_weakness', 'pelvic_asymmetry'],
-    howTo: '네발기기 자세에서 반대쪽 팔·다리를 동시에 뻗습니다. 골반이 기울지 않도록 코어를 유지합니다. 10회 × 3세트, 좌우.',
+    howTo: '네발기기 자세에서 반대쪽 팔·다리를 동시에 뻗습니다. 골반이 기울지 않도록 코어를 유지합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 40, eachSide: true, note: '수평 유지, 2초 홀드 후 천천히 내리기' },
+    demoSearchQuery: '버드독 운동 코어 안정화',
   },
   toe_raises: {
     id: 'toe_raises',
@@ -208,7 +240,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 1,
     patternIds: ['ankle_restriction'],
-    howTo: '서서 발뒤꿈치에 체중을 싣고 발가락을 최대한 들어올립니다. 15회 × 3세트.',
+    howTo: '서서 발뒤꿈치에 체중을 싣고 발가락을 최대한 들어올립니다.',
+    prescription: { sets: 3, reps: 20, restSec: 30, note: '천천히 내리는 것이 핵심' },
+    demoSearchQuery: '토레이즈 발가락 들기 전경골근',
   },
   calf_raise: {
     id: 'calf_raise',
@@ -220,7 +254,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 1,
     patternIds: ['ankle_restriction'],
-    howTo: '발 앞꿈치에 체중을 싣고 발뒤꿈치를 들어올립니다. 2초 유지 후 천천히 내립니다. 20회 × 3세트.',
+    howTo: '발 앞꿈치에 체중을 싣고 발뒤꿈치를 들어올립니다. 2초 유지 후 천천히 내립니다.',
+    prescription: { sets: 3, reps: 20, restSec: 45, note: '계단 엣지 이용 시 더 큰 가동범위 가능' },
+    demoSearchQuery: '카프레이즈 종아리 강화 운동',
   },
 
   // ─── Phase 2: Basic Strength ─────────────────────────────────────
@@ -234,7 +270,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 2,
     patternIds: ['knee_valgus'],
-    howTo: '무릎 위에 밴드를 걸고 스쿼트합니다. 무릎이 발끝과 같은 방향을 유지하도록 의식하며 15회 × 3세트.',
+    howTo: '무릎 위에 밴드를 걸고 스쿼트합니다. 무릎이 발끝과 같은 방향을 유지하도록 의식합니다.',
+    prescription: { sets: 3, reps: 15, restSec: 60, note: '내려갈 때 무릎 밖으로 밀어내는 의식' },
+    demoSearchQuery: '밴드 스쿼트 무릎 교정 중둔근',
   },
   side_walk: {
     id: 'side_walk',
@@ -246,7 +284,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 2,
     patternIds: ['knee_valgus', 'glute_amnesia'],
-    howTo: '발목이나 무릎 위에 밴드를 걸고, 반쯤 쪼그린 자세에서 좌우로 이동합니다. 각 방향 15걸음 × 3세트.',
+    howTo: '발목이나 무릎 위에 밴드를 걸고, 반쯤 쪼그린 자세에서 좌우로 이동합니다.',
+    prescription: { sets: 3, reps: 15, restSec: 60, eachSide: true, note: '발이 안쪽으로 모이지 않도록' },
+    demoSearchQuery: '사이드워크 밴드 중둔근 강화',
   },
   single_leg_bridge: {
     id: 'single_leg_bridge',
@@ -258,7 +298,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 2,
     patternIds: ['glute_amnesia', 'pelvic_asymmetry'],
-    howTo: '한 쪽 다리를 펴고 반대 발로 브릿지를 합니다. 골반이 기울지 않게 유지합니다. 12회 × 3세트, 좌우.',
+    howTo: '한 쪽 다리를 펴고 반대 발로 브릿지를 합니다. 골반이 기울지 않게 유지합니다.',
+    prescription: { sets: 3, reps: 12, restSec: 60, eachSide: true, note: '골반 수평 유지가 핵심, 처음엔 손 보조 가능' },
+    demoSearchQuery: '싱글레그 브릿지 한다리 글루트브릿지',
   },
   hip_thrust: {
     id: 'hip_thrust',
@@ -270,7 +312,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 2,
     patternIds: ['glute_amnesia'],
-    howTo: '어깨를 벤치에 걸치고 발은 바닥에. 엉덩이를 조이며 골반을 들어 최고점에서 2초 유지합니다. 12회 × 3세트.',
+    howTo: '어깨를 벤치에 걸치고 발은 바닥에. 엉덩이를 조이며 골반을 들어 최고점에서 2초 유지합니다.',
+    prescription: { sets: 3, reps: 12, restSec: 60, note: '최고점에서 2초 홀드, 무게는 나중에 추가' },
+    demoSearchQuery: '힙쓰러스트 운동 엉덩이 대둔근',
   },
   pallof_press: {
     id: 'pallof_press',
@@ -282,7 +326,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 2,
     patternIds: ['core_weakness'],
-    howTo: '옆으로 서서 밴드를 흉골 앞에 잡고 앞으로 뻗었다 당깁니다. 회전을 저항하며 코어를 안정화합니다. 10회 × 3세트, 좌우.',
+    howTo: '옆으로 서서 밴드를 흉골 앞에 잡고 앞으로 뻗었다 당깁니다. 회전을 저항하며 코어를 안정화합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 45, eachSide: true, note: '뻗은 상태에서 2초 홀드' },
+    demoSearchQuery: '팔로프 프레스 코어 안정화 밴드',
   },
   hip_abduction: {
     id: 'hip_abduction',
@@ -294,7 +340,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 2,
     patternIds: ['knee_valgus', 'glute_amnesia'],
-    howTo: '발목에 밴드를 걸고 서서 한 다리를 옆으로 들어올립니다. 상체가 기울지 않도록 합니다. 15회 × 3세트, 좌우.',
+    howTo: '발목에 밴드를 걸고 서서 한 다리를 옆으로 들어올립니다. 상체가 기울지 않도록 합니다.',
+    prescription: { sets: 3, reps: 15, restSec: 40, eachSide: true, note: '발목이 아닌 중둔근에서 움직임 의식' },
+    demoSearchQuery: '고관절 외전 운동 중둔근 밴드',
   },
 
   // ─── Phase 3: Functional Movement ────────────────────────────────
@@ -308,7 +356,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 3,
     patternIds: ['glute_amnesia', 'core_weakness'],
-    howTo: '발을 골반 너비로 서서 무릎을 약간 구부린 채 엉덩이를 뒤로 빼며 상체를 숙입니다. 등을 평평하게 유지합니다. 10회 × 3세트.',
+    howTo: '발을 골반 너비로 서서 무릎을 약간 구부린 채 엉덩이를 뒤로 빼며 상체를 숙입니다. 등을 평평하게 유지합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 90, note: '허리 아치 유지, 햄스트링 당기는 느낌까지만' },
+    demoSearchQuery: 'RDL 루마니안 데드리프트 햄스트링',
   },
   split_squat: {
     id: 'split_squat',
@@ -320,7 +370,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 3,
     patternIds: ['pelvic_asymmetry', 'glute_amnesia'],
-    howTo: '뒷발을 벤치에 올리고 앞발로 스쿼트합니다. 무릎이 앞으로 지나치게 나오지 않도록 합니다. 10회 × 3세트, 좌우.',
+    howTo: '뒷발을 벤치에 올리고 앞발로 스쿼트합니다. 무릎이 앞으로 지나치게 나오지 않도록 합니다.',
+    prescription: { sets: 3, reps: 10, restSec: 90, eachSide: true, note: '처음엔 맨몸, 익숙해지면 덤벨 추가' },
+    demoSearchQuery: '불가리안 스플릿 스쿼트 운동',
   },
   single_leg_rdl: {
     id: 'single_leg_rdl',
@@ -332,7 +384,9 @@ export const EXERCISES: Record<string, Exercise> = {
     purpose: 'strength',
     phase: 3,
     patternIds: ['pelvic_asymmetry', 'ankle_restriction'],
-    howTo: '한 발로 서서 상체를 앞으로 기울이며 뒷다리를 들어올립니다. 균형을 잡으며 8회 × 3세트, 좌우.',
+    howTo: '한 발로 서서 상체를 앞으로 기울이며 뒷다리를 들어올립니다. 균형을 잡으며 진행합니다.',
+    prescription: { sets: 3, reps: 8, restSec: 90, eachSide: true, note: '벽을 손끝으로 살짝 짚어도 OK' },
+    demoSearchQuery: '싱글레그 RDL 한다리 데드리프트',
   },
 };
 
@@ -348,7 +402,6 @@ export function getExercisesByPatterns(patternIds: string[]): Exercise[] {
     }
   });
 
-  // Sort: phase asc, purpose order: stretch → mobility → activation → strength
   const purposeOrder: Record<string, number> = { stretch: 0, mobility: 1, activation: 2, strength: 3 };
   return result.sort((a, b) => {
     if (a.phase !== b.phase) return a.phase - b.phase;

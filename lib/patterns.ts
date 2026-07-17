@@ -13,9 +13,14 @@ export const PATTERN_CASCADES: Record<string, string> = {
 export function detectPatterns(
   answers: Record<string, string>,
   painLocations: string[],
-  photoAnalysis?: PhotoAnalysisResult | null,
+  photoAnalyses: PhotoAnalysisResult[] = [],
 ): BodyPattern[] {
   const patterns: BodyPattern[] = [];
+
+  // Flatten all issues from all photo analyses
+  const allIssues = photoAnalyses.flatMap((pa) => pa.issues);
+  const findIssueSeverity = (patternId: string) =>
+    allIssues.find((i) => i.patternId === patternId)?.severity;
 
   // ─── 발목 가동범위 제한 ──────────────────────────────────
   const ankleSound = answers['ankle_sound'];
@@ -24,7 +29,7 @@ export function detectPatterns(
   const anklePain = painLocations.some((p) => p.includes('ankle') || p.includes('foot'));
 
   const ankleSignals = [ankleSound, footDir, singleLeg].filter((v) => v && v !== '없음' && v !== '아니오');
-  const photoAnkleSeverity = photoAnalysis?.issues.find((i) => i.patternId === 'ankle_restriction')?.severity;
+  const photoAnkleSeverity = findIssueSeverity('ankle_restriction');
 
   if (ankleSignals.length >= 1 || anklePain || photoAnkleSeverity) {
     const severity = computeSeverity(ankleSignals.length + (anklePain ? 1 : 0) + (photoAnkleSeverity === 'high' ? 2 : photoAnkleSeverity === 'medium' ? 1 : 0), 3);
@@ -44,7 +49,7 @@ export function detectPatterns(
   const kneeValgusSquat = answers['knee_valgus_squat'];
   const kneeValgusRise = answers['knee_valgus_rise'];
   const kneePain = painLocations.some((p) => p.includes('knee'));
-  const photoKneeSeverity = photoAnalysis?.issues.find((i) => i.patternId === 'knee_valgus')?.severity;
+  const photoKneeSeverity = findIssueSeverity('knee_valgus');
 
   const kneeSignals = [kneeValgusSquat, kneeValgusRise].filter((v) => v && v !== '없음');
   if (kneeSignals.length >= 1 || kneePain || photoKneeSeverity) {
@@ -85,7 +90,7 @@ export function detectPatterns(
   const pelvisFloat = answers['pelvis_float'];
   const pantsRotate = answers['pants_rotate'];
   const backTension = answers['back_tension'];
-  const photoHipSeverity = photoAnalysis?.issues.find((i) => i.patternId === 'pelvic_asymmetry')?.severity;
+  const photoHipSeverity = findIssueSeverity('pelvic_asymmetry');
 
   const pelvisSignals = [tiltWalk, pelvisFloat, pantsRotate, backTension].filter((v) => v && v !== '없음');
   const backPain = painLocations.some((p) => p.includes('back') || p.includes('hip'));
@@ -107,7 +112,7 @@ export function detectPatterns(
   // ─── 코어 약화 / 골반 전방경사 ───────────────────────────
   const coreTension = answers['core_tension'];
   const anteriorTilt = answers['anterior_tilt'];
-  const photoCoreSeverity = photoAnalysis?.issues.find((i) => i.patternId === 'core_weakness')?.severity;
+  const photoCoreSeverity = findIssueSeverity('core_weakness');
 
   const coreSignals = [
     coreTension === '예' ? '예' : null,
@@ -130,7 +135,7 @@ export function detectPatterns(
   // ─── 상체 비대칭 ──────────────────────────────────────────
   const shoulderStiff = answers['shoulder_stiff'];
   const gripWeak = answers['grip_weak'];
-  const photoShoulderSeverity = photoAnalysis?.issues.find((i) => i.patternId === 'upper_asymmetry')?.severity;
+  const photoShoulderSeverity = findIssueSeverity('upper_asymmetry');
 
   const upperSignals = [shoulderStiff, gripWeak].filter((v) => v && v !== '없음');
   const neckPain = painLocations.some((p) => p.includes('neck') || p.includes('shoulder'));
@@ -151,7 +156,7 @@ export function detectPatterns(
   // ─── 고관절 외회전 과도 ────────────────────────────────────
   const footExternal = answers['foot_direction'];
   const hipClickAns = answers['hip_click'];
-  const photoHipExt = photoAnalysis?.issues.find((i) => i.patternId === 'hip_external_rotation');
+  const photoHipExt = allIssues.find((i) => i.patternId === 'hip_external_rotation');
 
   if ((footExternal && footExternal !== '없음') || (hipClickAns && hipClickAns !== '없음') || photoHipExt) {
     patterns.push({

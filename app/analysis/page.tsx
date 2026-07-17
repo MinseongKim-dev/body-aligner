@@ -27,7 +27,7 @@ export default function AnalysisPage() {
     const detected = detectPatterns(
       state.checklistAnswers,
       state.painLocations,
-      state.photoAnalysis,
+      state.photoAnalyses,
     );
     setPatterns(detected);
     saveState({ detectedPatterns: detected });

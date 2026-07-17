@@ -8,7 +8,7 @@ export const DEFAULT_STATE: AppState = {
   checklistAnswers: {},
   painLocations: [],
   detectedPatterns: [],
-  photoAnalysis: null,
+  photoAnalyses: [],
   videoAnalyses: [],
 };
 
