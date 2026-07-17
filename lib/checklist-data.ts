@@ -1,7 +1,19 @@
 import type { ChecklistItem } from './types';
 
 export const CHECKLIST_ITEMS: ChecklistItem[] = [
-  // ── 골반 (7) ────────────────────────────────────────────
+  // ── 골반 (9) ────────────────────────────────────────────
+  {
+    id: 'glute_nonfeel',
+    question: '운동 중 한쪽 엉덩이가 수축(조여지는) 느낌이 없다',
+    options: ['없음', '좌측', '우측'],
+    category: 'pelvis',
+  },
+  {
+    id: 'running_height_diff',
+    question: '걷거나 뛸 때 양발의 지면 이탈 높이가 달라 단차가 느껴진다',
+    options: ['아니오', '예'],
+    category: 'pelvis',
+  },
   {
     id: 'tilt_walk',
     question: '걸을 때 한쪽으로 기우는 느낌이 있다',
@@ -45,7 +57,13 @@ export const CHECKLIST_ITEMS: ChecklistItem[] = [
     category: 'pelvis',
   },
 
-  // ── 무릎 (5) ─────────────────────────────────────────────
+  // ── 무릎 (6) ─────────────────────────────────────────────
+  {
+    id: 'knee_drive_limited',
+    question: '달릴 때 한쪽 무릎이 잘 올라오지 않거나 보폭이 작아진다',
+    options: ['없음', '좌측', '우측'],
+    category: 'knee',
+  },
   {
     id: 'knee_valgus_squat',
     question: '스쿼트 시 무릎이 안쪽으로 모인다',
@@ -77,7 +95,13 @@ export const CHECKLIST_ITEMS: ChecklistItem[] = [
     category: 'knee',
   },
 
-  // ── 발목 (5) ─────────────────────────────────────────────
+  // ── 발목 (6) ─────────────────────────────────────────────
+  {
+    id: 'calf_numbness_run',
+    question: '달리거나 잘못 걸을 때 한쪽 발목·종아리가 저리거나 무거워진다',
+    options: ['없음', '좌측', '우측'],
+    category: 'ankle',
+  },
   {
     id: 'ankle_sound',
     question: '발목을 돌리면 소리가 난다',
