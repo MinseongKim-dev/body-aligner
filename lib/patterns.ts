@@ -8,6 +8,8 @@ export const PATTERN_CASCADES: Record<string, string> = {
   core_weakness: '코어 약화 → 골반 전방경사 → 요추 과신전 → 허리 통증',
   upper_asymmetry: '어깨 불균형 → 흉추 제한 → 경추 긴장 → 두통',
   hip_external_rotation: '고관절 외회전 과도 → 내회전 부족 → 무릎 내측 부하 → 전방십자인대 스트레스',
+  hip_flexor_restriction: '고관절 굴곡근 단축 → 무릎 드라이브 감소 → 보행 단차 → 반대측 보상 과부하',
+  compensatory_calf_overload: '반대측 둔근 비활성 → 발목·종아리 보상 → 신경·순환 압박 → 저림·무거움',
 };
 
 export function detectPatterns(
@@ -69,19 +71,20 @@ export function detectPatterns(
   // ─── 둔근 비활성화 (글루트 암네시아) ─────────────────────
   const stairsWeak = answers['stairs_weak'];
   const hipClick = answers['hip_click'];
+  const gluteNonfeel = answers['glute_nonfeel'];
   const hipPain = painLocations.some((p) => p.includes('hip'));
-  const gluteSignals = [stairsWeak, kneeValgusSquat].filter((v) => v && v !== '없음');
+  const gluteSignals = [stairsWeak, kneeValgusSquat, gluteNonfeel].filter((v) => v && v !== '없음');
 
   if (gluteSignals.length >= 1 || hipPain) {
     patterns.push({
       id: 'glute_amnesia',
       name: '둔근 비활성화',
-      description: '엉덩이 근육(대둔근·중둔근)이 제대로 활성화되지 않아, 허리와 무릎에 과부하가 걸리는 상태입니다.',
+      description: '엉덩이 근육(대둔근·중둔근)이 제대로 활성화되지 않아, 허리와 무릎에 과부하가 걸리는 상태입니다. 특히 한쪽 둔근이 수축 느낌이 없는 경우 신경근 재연결 운동이 우선입니다.',
       cascade: PATTERN_CASCADES['glute_amnesia'],
-      severity: gluteSignals.length >= 2 || hipPain ? 'medium' : 'low',
+      severity: gluteSignals.length >= 2 || hipPain || (gluteNonfeel && gluteNonfeel !== '없음') ? 'medium' : 'low',
       priority: 2,
-      side: sideDominant([stairsWeak]),
-      exerciseIds: ['clamshell', 'glute_bridge', 'donkey_kicks', 'standing_glute_squeeze', 'hip_thrust'],
+      side: sideDominant([stairsWeak, gluteNonfeel]),
+      exerciseIds: ['prone_hip_extension', 'clamshell', 'glute_bridge', 'donkey_kicks', 'standing_glute_squeeze', 'hip_thrust'],
     });
   }
 
@@ -90,9 +93,12 @@ export function detectPatterns(
   const pelvisFloat = answers['pelvis_float'];
   const pantsRotate = answers['pants_rotate'];
   const backTension = answers['back_tension'];
+  const runningHeightDiff = answers['running_height_diff'];
   const photoHipSeverity = findIssueSeverity('pelvic_asymmetry');
 
-  const pelvisSignals = [tiltWalk, pelvisFloat, pantsRotate, backTension].filter((v) => v && v !== '없음');
+  const pelvisSignals = [tiltWalk, pelvisFloat, pantsRotate, backTension,
+    runningHeightDiff === '예' ? '예' : null,
+  ].filter((v) => v && v !== '없음');
   const backPain = painLocations.some((p) => p.includes('back') || p.includes('hip'));
 
   if (pelvisSignals.length >= 1 || backPain || photoHipSeverity) {
@@ -150,6 +156,37 @@ export function detectPatterns(
       priority: 4,
       side: sideDominant([shoulderStiff, gripWeak]),
       exerciseIds: ['thoracic_rotation', 'wall_angels', 'shoulder_rolls'],
+    });
+  }
+
+  // ─── 고관절 굴곡근 단축 / 무릎 드라이브 제한 ─────────────
+  const kneeDriveLimited = answers['knee_drive_limited'];
+  if (kneeDriveLimited && kneeDriveLimited !== '없음') {
+    patterns.push({
+      id: 'hip_flexor_restriction',
+      name: '고관절 굴곡근 단축',
+      description: '장요근·대퇴직근이 단축되어 달리거나 걸을 때 무릎이 충분히 올라오지 않습니다. 반대측 둔근 비활성과 짝을 이루는 경우가 많습니다.',
+      cascade: PATTERN_CASCADES['hip_flexor_restriction'],
+      severity: 'medium',
+      priority: 2,
+      side: sideDominant([kneeDriveLimited]),
+      exerciseIds: ['couch_stretch', 'hip_flexor_stretch', 'high_knee_march', 'split_squat'],
+    });
+  }
+
+  // ─── 보상성 발목·종아리 과부하 ────────────────────────────
+  const calfNumbness = answers['calf_numbness_run'];
+  const ankleCalfPain = painLocations.some((p) => p.includes('ankle') || p.includes('foot'));
+  if ((calfNumbness && calfNumbness !== '없음') || (ankleCalfPain && (gluteNonfeel && gluteNonfeel !== '없음'))) {
+    patterns.push({
+      id: 'compensatory_calf_overload',
+      name: '보상성 발목·종아리 과부하',
+      description: '반대측 둔근이 비활성화되면 발목·종아리가 충격을 대신 흡수합니다. 달릴 때 저림·무거움은 신경·혈류 압박의 신호이며, 근본 원인은 둔근 비활성입니다.',
+      cascade: PATTERN_CASCADES['compensatory_calf_overload'],
+      severity: 'high',
+      priority: 1,
+      side: sideDominant([calfNumbness]),
+      exerciseIds: ['tibial_nerve_floss', 'calf_stretch', 'wall_ankle_stretch', 'prone_hip_extension'],
     });
   }
 
