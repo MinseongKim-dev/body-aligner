@@ -10,6 +10,8 @@ export const DEFAULT_STATE: AppState = {
   detectedPatterns: [],
   photoAnalyses: [],
   videoAnalyses: [],
+  workoutLogs: [],
+  assessmentHistory: [],
 };
 
 export function loadState(): AppState {

@@ -86,10 +86,23 @@ export interface PhotoAnalysisResult {
   issues: PoseIssue[];
 }
 
+export interface WorkoutLog {
+  date: string;
+  completedExerciseIds: string[];
+}
+
+export interface AssessmentSnapshot {
+  date: string;
+  detectedPatterns: BodyPattern[];
+  photoAnalyses: PhotoAnalysisResult[];
+}
+
 export interface AppState {
   checklistAnswers: Record<string, string>;
   painLocations: string[];
   detectedPatterns: BodyPattern[];
   photoAnalyses: PhotoAnalysisResult[];
   videoAnalyses: VideoAnalysis[];
+  workoutLogs: WorkoutLog[];
+  assessmentHistory: AssessmentSnapshot[];
 }

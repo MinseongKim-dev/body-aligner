@@ -31,6 +31,17 @@ export default function AnalysisPage() {
     );
     setPatterns(detected);
     saveState({ detectedPatterns: detected });
+
+    // Save assessment snapshot to history
+    const today = new Date().toISOString().slice(0, 10);
+    const snapshot = {
+      date: new Date().toISOString(),
+      detectedPatterns: detected,
+      photoAnalyses: state.photoAnalyses,
+    };
+    const history = (state.assessmentHistory ?? []).filter((h) => !h.date.startsWith(today));
+    saveState({ assessmentHistory: [snapshot, ...history].slice(0, 20) });
+
     setLoading(false);
   }, []);
 
@@ -90,9 +101,7 @@ export default function AnalysisPage() {
                     <span key={node.label} className="flex items-center gap-1">
                       <span
                         className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${
-                          isActive
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-slate-700 text-slate-400'
+                          isActive ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-400'
                         }`}
                       >
                         {node.icon} {node.label}
@@ -135,7 +144,7 @@ export default function AnalysisPage() {
             onClick={() => router.push('/video')}
             className="flex-1 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-2xl transition-colors"
           >
-            유튜브 영상 매칭 →
+            영상 매칭 →
           </button>
         </div>
       </main>
